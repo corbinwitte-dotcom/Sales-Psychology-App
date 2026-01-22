@@ -17,8 +17,18 @@ const App = {
         favoritesList: null,
         recentSection: null,
         recentList: null,
-        categorySections: null
+        categorySections: null,
+        renameModal: null,
+        renameInput: null,
+        originalTitle: null,
+        saveRenameBtn: null,
+        cancelRenameBtn: null,
+        closeRenameModal: null,
+        resetTitleBtn: null
     },
+
+    // Current meditation being renamed
+    currentRenameMeditation: null,
 
     /**
      * Initialize the application
@@ -34,6 +44,16 @@ const App = {
         this.elements.recentSection = document.getElementById('recentSection');
         this.elements.recentList = document.getElementById('recentList');
         this.elements.categorySections = document.getElementById('categorySections');
+        this.elements.renameModal = document.getElementById('renameModal');
+        this.elements.renameInput = document.getElementById('renameInput');
+        this.elements.originalTitle = document.getElementById('originalTitle');
+        this.elements.saveRenameBtn = document.getElementById('saveRenameBtn');
+        this.elements.cancelRenameBtn = document.getElementById('cancelRenameBtn');
+        this.elements.closeRenameModal = document.getElementById('closeRenameModal');
+        this.elements.resetTitleBtn = document.getElementById('resetTitleBtn');
+
+        // Initialize rename modal
+        this.initRenameModal();
 
         // Initialize audio player
         AudioPlayer.init();
@@ -234,6 +254,9 @@ const App = {
         const isFavorited = StorageManager.isFavorited(meditation.filename);
         const playbackData = StorageManager.getPlaybackPosition(meditation.filename);
         const hasProgress = playbackData && playbackData.position > 0;
+        const customTitle = StorageManager.getCustomTitle(meditation.filename);
+        const displayTitle = customTitle || meditation.title;
+        const hasCustomTitle = !!customTitle;
 
         card.innerHTML = `
             <div class="meditation-card-header">
@@ -242,7 +265,14 @@ const App = {
                 </div>
             </div>
             <div class="meditation-card-content">
-                <h3 class="meditation-card-title">${meditation.title}</h3>
+                <div class="meditation-card-title-wrapper">
+                    <div class="meditation-card-title-text">
+                        <h3 class="meditation-card-title">
+                            ${displayTitle}
+                            ${hasCustomTitle ? '<span class="custom-title-indicator" title="Custom title"></span>' : ''}
+                        </h3>
+                    </div>
+                </div>
                 <p class="meditation-card-category">${meditation.category.name}</p>
                 ${hasProgress ? `
                     <div class="meditation-card-progress">
@@ -270,7 +300,29 @@ const App = {
             this.toggleFavorite(meditation.filename);
         });
 
-        header.appendChild(favoriteBtn);
+        // Create actions container
+        const actionsContainer = document.createElement('div');
+        actionsContainer.className = 'meditation-card-actions';
+
+        // Add rename button
+        const renameBtn = document.createElement('button');
+        renameBtn.className = 'meditation-card-rename';
+        renameBtn.title = 'Rename meditation';
+        renameBtn.innerHTML = `
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+            </svg>
+        `;
+
+        renameBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.openRenameModal(meditation);
+        });
+
+        actionsContainer.appendChild(renameBtn);
+        actionsContainer.appendChild(favoriteBtn);
+        header.appendChild(actionsContainer);
 
         // Add click handler to play
         card.addEventListener('click', () => {
@@ -293,6 +345,142 @@ const App = {
     toggleFavorite(filename) {
         StorageManager.toggleFavorite(filename);
         this.render();
+    },
+
+    /**
+     * Initialize rename modal
+     */
+    initRenameModal() {
+        // Close modal handlers
+        this.elements.closeRenameModal.addEventListener('click', () => {
+            this.closeRenameModal();
+        });
+
+        this.elements.cancelRenameBtn.addEventListener('click', () => {
+            this.closeRenameModal();
+        });
+
+        // Click outside to close
+        this.elements.renameModal.addEventListener('click', (e) => {
+            if (e.target === this.elements.renameModal || e.target.classList.contains('modal-overlay')) {
+                this.closeRenameModal();
+            }
+        });
+
+        // Save rename
+        this.elements.saveRenameBtn.addEventListener('click', () => {
+            this.saveRename();
+        });
+
+        // Reset to original title
+        this.elements.resetTitleBtn.addEventListener('click', () => {
+            this.resetTitle();
+        });
+
+        // Enter key to save
+        this.elements.renameInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                this.saveRename();
+            } else if (e.key === 'Escape') {
+                e.preventDefault();
+                this.closeRenameModal();
+            }
+        });
+    },
+
+    /**
+     * Open rename modal
+     */
+    openRenameModal(meditation) {
+        this.currentRenameMeditation = meditation;
+
+        const customTitle = StorageManager.getCustomTitle(meditation.filename);
+        const displayTitle = customTitle || meditation.title;
+
+        this.elements.renameInput.value = displayTitle;
+        this.elements.originalTitle.textContent = meditation.title;
+
+        // Show/hide reset button based on whether there's a custom title
+        if (customTitle) {
+            this.elements.resetTitleBtn.style.display = 'block';
+        } else {
+            this.elements.resetTitleBtn.style.display = 'none';
+        }
+
+        this.elements.renameModal.classList.remove('hidden');
+        setTimeout(() => {
+            this.elements.renameModal.classList.add('active');
+            this.elements.renameInput.focus();
+            this.elements.renameInput.select();
+        }, 10);
+    },
+
+    /**
+     * Close rename modal
+     */
+    closeRenameModal() {
+        this.elements.renameModal.classList.remove('active');
+        setTimeout(() => {
+            this.elements.renameModal.classList.add('hidden');
+            this.currentRenameMeditation = null;
+        }, 300);
+    },
+
+    /**
+     * Save renamed title
+     */
+    saveRename() {
+        if (!this.currentRenameMeditation) return;
+
+        const newTitle = this.elements.renameInput.value.trim();
+
+        if (!newTitle) {
+            alert('Please enter a name for the meditation');
+            this.elements.renameInput.focus();
+            return;
+        }
+
+        // Save custom title
+        StorageManager.setCustomTitle(this.currentRenameMeditation.filename, newTitle);
+
+        // Update the meditation object's title for current session
+        const meditation = this.meditations.find(m => m.filename === this.currentRenameMeditation.filename);
+        if (meditation) {
+            // Note: We don't actually modify the meditation object, custom title is stored separately
+            // and retrieved when displaying
+        }
+
+        // Re-render UI
+        this.render();
+
+        // Update player if this meditation is currently playing
+        if (AudioPlayer.currentMeditation &&
+            AudioPlayer.currentMeditation.filename === this.currentRenameMeditation.filename) {
+            AudioPlayer.elements.playerTitle.textContent = newTitle;
+        }
+
+        this.closeRenameModal();
+    },
+
+    /**
+     * Reset to original title
+     */
+    resetTitle() {
+        if (!this.currentRenameMeditation) return;
+
+        if (confirm('Reset to original title?')) {
+            StorageManager.removeCustomTitle(this.currentRenameMeditation.filename);
+            this.render();
+
+            // Update player if this meditation is currently playing
+            if (AudioPlayer.currentMeditation &&
+                AudioPlayer.currentMeditation.filename === this.currentRenameMeditation.filename) {
+                AudioPlayer.elements.playerTitle.textContent = this.currentRenameMeditation.title;
+            }
+
+            this.closeRenameModal();
+        }
     },
 
     /**

@@ -98,8 +98,12 @@ const AudioPlayer = {
     load(meditation) {
         this.currentMeditation = meditation;
 
+        // Get custom title if exists
+        const customTitle = StorageManager.getCustomTitle(meditation.filename);
+        const displayTitle = customTitle || meditation.title;
+
         // Update player UI
-        this.elements.playerTitle.textContent = meditation.title;
+        this.elements.playerTitle.textContent = displayTitle;
         this.elements.playerCategory.textContent = meditation.category.name;
 
         // Update favorite button state
@@ -117,10 +121,10 @@ const AudioPlayer = {
             this.elements.audio.currentTime = savedPosition.position;
         }
 
-        // Add to recently played
+        // Add to recently played (use custom title if available)
         StorageManager.addToRecentlyPlayed(
             meditation.filename,
-            meditation.title,
+            displayTitle,
             meditation.category.name
         );
 

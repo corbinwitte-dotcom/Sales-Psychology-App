@@ -9,7 +9,8 @@ const StorageManager = {
         FAVORITES: 'peakPerformance_favorites',
         PLAYBACK_POSITIONS: 'peakPerformance_playbackPositions',
         RECENT_PLAYED: 'peakPerformance_recentPlayed',
-        SETTINGS: 'peakPerformance_settings'
+        SETTINGS: 'peakPerformance_settings',
+        CUSTOM_TITLES: 'peakPerformance_customTitles'
     },
 
     /**
@@ -182,6 +183,53 @@ const StorageManager = {
         const newSettings = { ...currentSettings, ...settings };
         this.set(this.KEYS.SETTINGS, newSettings);
         return newSettings;
+    },
+
+    /**
+     * Get all custom titles
+     */
+    getCustomTitles() {
+        return this.get(this.KEYS.CUSTOM_TITLES) || {};
+    },
+
+    /**
+     * Get custom title for a meditation
+     */
+    getCustomTitle(filename) {
+        const titles = this.getCustomTitles();
+        return titles[filename] || null;
+    },
+
+    /**
+     * Set custom title for a meditation
+     */
+    setCustomTitle(filename, customTitle) {
+        const titles = this.getCustomTitles();
+        if (customTitle && customTitle.trim()) {
+            titles[filename] = customTitle.trim();
+        } else {
+            delete titles[filename];
+        }
+        this.set(this.KEYS.CUSTOM_TITLES, titles);
+        return titles;
+    },
+
+    /**
+     * Remove custom title (reset to original)
+     */
+    removeCustomTitle(filename) {
+        const titles = this.getCustomTitles();
+        delete titles[filename];
+        this.set(this.KEYS.CUSTOM_TITLES, titles);
+        return titles;
+    },
+
+    /**
+     * Check if meditation has custom title
+     */
+    hasCustomTitle(filename) {
+        const titles = this.getCustomTitles();
+        return !!titles[filename];
     },
 
     /**

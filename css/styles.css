@@ -562,6 +562,242 @@ body {
     font-weight: 500;
 }
 
+/* Rename Modal */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-lg);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--transition-base);
+}
+
+.modal.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    position: relative;
+    background: var(--white);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-xl);
+    max-width: 500px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    transform: scale(0.95);
+    transition: transform var(--transition-base);
+}
+
+.modal.active .modal-content {
+    transform: scale(1);
+}
+
+.modal-header {
+    padding: var(--spacing-lg);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin: 0;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    color: var(--text-medium);
+    cursor: pointer;
+    padding: var(--spacing-xs);
+    border-radius: var(--radius-full);
+    transition: all var(--transition-fast);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-close:hover {
+    background: var(--very-light-blue);
+    color: var(--primary-blue);
+}
+
+.modal-body {
+    padding: var(--spacing-lg);
+}
+
+.modal-description {
+    color: var(--text-medium);
+    margin-bottom: var(--spacing-md);
+    font-size: 0.95rem;
+}
+
+.rename-input {
+    width: 100%;
+    padding: var(--spacing-md);
+    font-size: 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-md);
+    font-family: inherit;
+    transition: all var(--transition-fast);
+}
+
+.rename-input:focus {
+    outline: none;
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.modal-hint {
+    margin-top: var(--spacing-sm);
+    font-size: 0.85rem;
+    color: var(--text-light);
+}
+
+.modal-hint span {
+    color: var(--text-medium);
+    font-weight: 500;
+}
+
+.modal-footer {
+    padding: var(--spacing-lg);
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--spacing-md);
+    flex-wrap: wrap;
+}
+
+.modal-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+/* Buttons */
+.btn {
+    padding: var(--spacing-sm) var(--spacing-lg);
+    font-size: 0.95rem;
+    font-weight: 500;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    font-family: inherit;
+    white-space: nowrap;
+}
+
+.btn-primary {
+    background: var(--gradient-primary);
+    color: var(--white);
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-primary:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.btn-secondary {
+    background: var(--very-light-blue);
+    color: var(--primary-blue);
+}
+
+.btn-secondary:hover {
+    background: var(--light-blue);
+    color: var(--white);
+}
+
+.btn-outline {
+    background: transparent;
+    color: var(--text-medium);
+    border: 1px solid var(--border-color);
+}
+
+.btn-outline:hover {
+    background: var(--bg-light);
+    border-color: var(--text-medium);
+}
+
+/* Rename button on cards */
+.meditation-card-rename {
+    background: none;
+    border: none;
+    color: var(--text-light);
+    cursor: pointer;
+    padding: var(--spacing-xs);
+    border-radius: var(--radius-full);
+    transition: all var(--transition-fast);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: scale(0.9);
+}
+
+.meditation-card:hover .meditation-card-rename {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.meditation-card-rename:hover {
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--accent-blue);
+}
+
+.meditation-card-actions {
+    display: flex;
+    gap: var(--spacing-xs);
+}
+
+.meditation-card-title-wrapper {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--spacing-sm);
+}
+
+.meditation-card-title-text {
+    flex: 1;
+    min-width: 0;
+}
+
+.custom-title-indicator {
+    display: inline-block;
+    width: 4px;
+    height: 4px;
+    background: var(--accent-blue);
+    border-radius: 50%;
+    margin-left: 0.25rem;
+    vertical-align: middle;
+}
+
 /* Utility Classes */
 .hidden {
     display: none !important;
