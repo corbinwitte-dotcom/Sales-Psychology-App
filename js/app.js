@@ -71,38 +71,31 @@ const App = {
     },
 
     /**
-     * Load meditation files from the audio directory
+     * Load meditation files from the audio manifest
      */
     async loadMeditations() {
         this.showLoading();
 
         try {
-            // Fetch the list of audio files
-            const response = await fetch('audio/');
-            const html = await response.text();
+            // Fetch the audio files manifest
+            const response = await fetch('audio/audio-files.json');
 
-            // Parse audio files from directory listing
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(html, 'text/html');
-            const links = doc.querySelectorAll('a');
+            if (!response.ok) {
+                throw new Error('Could not load audio-files.json');
+            }
 
-            const audioFiles = [];
-            links.forEach(link => {
-                const href = link.getAttribute('href');
-                if (href && this.isAudioFile(href)) {
-                    audioFiles.push(href);
-                }
-            });
+            const manifest = await response.json();
+            const audioFiles = manifest.files || [];
 
-            // If no files found via directory listing, try alternative method
-            if (audioFiles.length === 0) {
-                console.log('No audio files found via directory listing');
-                // In production, you might want to maintain a manifest file
-                // For now, we'll show the empty state
+            // Filter out non-audio files and process
+            const validFiles = audioFiles.filter(filename => this.isAudioFile(filename));
+
+            if (validFiles.length === 0) {
+                console.log('No audio files listed in manifest');
                 this.meditations = [];
             } else {
                 // Process audio files
-                this.meditations = audioFiles.map(filename => {
+                this.meditations = validFiles.map(filename => {
                     const category = CategoryManager.categorize(filename);
                     const title = CategoryManager.formatTitle(filename);
 
@@ -114,11 +107,11 @@ const App = {
                     };
                 });
 
-                console.log(`Loaded ${this.meditations.length} meditations`);
+                console.log(`Loaded ${this.meditations.length} meditations from manifest`);
             }
         } catch (error) {
             console.error('Error loading meditations:', error);
-            // If fetch fails (CORS issues, etc.), try to use a hardcoded list or manifest
+            console.error('Make sure audio/audio-files.json exists and is valid JSON');
             this.meditations = [];
         }
 

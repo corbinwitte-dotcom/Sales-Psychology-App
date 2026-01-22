@@ -4,17 +4,21 @@ Get your Peak Performance app running in 5 minutes!
 
 ## Step 1: Add Audio Files
 
-Place your meditation/visualization audio files in the `audio/` folder.
+Place your meditation/visualization audio files in the `audio/` folder, then update `audio/audio-files.json`:
 
-**Example filenames for auto-categorization:**
+```json
+{
+  "files": [
+    "morning-sales-confidence.mp3",
+    "pre-cold-call-visualization.mp3",
+    "presentation-power.mp3",
+    "networking-event-prep.mp3",
+    "daily-mindset-practice.mp3"
+  ]
+}
 ```
-audio/
-├── morning-sales-confidence.mp3
-├── pre-cold-call-visualization.mp3
-├── presentation-power.mp3
-├── networking-event-prep.mp3
-└── daily-mindset-practice.mp3
-```
+
+**Important:** List ALL your audio files in `audio-files.json` for them to appear in the app!
 
 ## Step 2: Generate Icons (Optional but Recommended)
 
