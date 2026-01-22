@@ -1,0 +1,689 @@
+/* ===================================
+   Peak Performance - Sales Visualization App
+   Mobile-First, Confidence-Inspiring Design
+   =================================== */
+
+/* CSS Variables */
+:root {
+    /* Colors - Deep Blues & Clean Whites */
+    --primary-blue: #1e3a8a;
+    --primary-blue-dark: #1e40af;
+    --accent-blue: #3b82f6;
+    --light-blue: #60a5fa;
+    --very-light-blue: #dbeafe;
+    --bg-light: #f8fafc;
+    --white: #ffffff;
+    --text-dark: #1e293b;
+    --text-medium: #475569;
+    --text-light: #94a3b8;
+    --border-color: #e2e8f0;
+    --success-green: #10b981;
+    --warning-gold: #f59e0b;
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+    --gradient-accent: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+    --gradient-overlay: linear-gradient(to bottom, rgba(30, 58, 138, 0.05), transparent);
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    --shadow-blue: 0 10px 25px -5px rgba(30, 58, 138, 0.2);
+
+    /* Spacing */
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 0.75rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    --spacing-2xl: 3rem;
+
+    /* Border Radius */
+    --radius-sm: 0.5rem;
+    --radius-md: 0.75rem;
+    --radius-lg: 1rem;
+    --radius-xl: 1.5rem;
+    --radius-full: 9999px;
+
+    /* Transitions */
+    --transition-fast: 150ms ease-in-out;
+    --transition-base: 250ms ease-in-out;
+    --transition-slow: 350ms ease-in-out;
+}
+
+/* Reset & Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: var(--bg-light);
+    color: var(--text-dark);
+    line-height: 1.6;
+    overflow-x: hidden;
+    min-height: 100vh;
+    padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Header */
+.app-header {
+    background: var(--gradient-primary);
+    color: var(--white);
+    padding: var(--spacing-xl) var(--spacing-lg);
+    box-shadow: var(--shadow-lg);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+}
+
+.header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.app-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: var(--spacing-xs);
+    animation: fadeInDown 0.6s ease-out;
+}
+
+.app-tagline {
+    font-size: 0.95rem;
+    opacity: 0.95;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    animation: fadeInUp 0.6s ease-out 0.1s both;
+}
+
+/* Main Content */
+.app-main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--spacing-lg);
+    animation: fadeIn 0.8s ease-out;
+}
+
+.content-container {
+    margin-top: var(--spacing-lg);
+}
+
+/* Audio Player */
+.audio-player {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--white);
+    box-shadow: var(--shadow-xl), var(--shadow-blue);
+    padding: var(--spacing-lg);
+    padding-bottom: calc(var(--spacing-lg) + env(safe-area-inset-bottom));
+    z-index: 200;
+    transform: translateY(100%);
+    transition: transform var(--transition-slow);
+    border-top: 3px solid var(--accent-blue);
+}
+
+.audio-player.active {
+    transform: translateY(0);
+}
+
+.player-content {
+    max-width: 600px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.close-player {
+    position: absolute;
+    top: -0.5rem;
+    right: 0;
+    background: none;
+    border: none;
+    color: var(--text-medium);
+    cursor: pointer;
+    padding: var(--spacing-xs);
+    border-radius: var(--radius-full);
+    transition: all var(--transition-fast);
+}
+
+.close-player:hover {
+    background: var(--very-light-blue);
+    color: var(--primary-blue);
+}
+
+.player-info {
+    text-align: center;
+    margin-bottom: var(--spacing-lg);
+}
+
+.player-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: var(--spacing-xs);
+}
+
+.player-category {
+    font-size: 0.9rem;
+    color: var(--text-medium);
+    font-weight: 500;
+}
+
+/* Player Controls */
+.player-controls {
+    margin-bottom: var(--spacing-md);
+}
+
+.progress-container {
+    margin-bottom: var(--spacing-lg);
+}
+
+.time-display {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    color: var(--text-medium);
+    margin-bottom: var(--spacing-sm);
+    font-weight: 500;
+}
+
+.progress-bar {
+    position: relative;
+    height: 6px;
+    background: var(--very-light-blue);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+}
+
+.progress-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: var(--gradient-accent);
+    border-radius: var(--radius-full);
+    width: 0%;
+    transition: width 0.1s linear;
+}
+
+.progress-slider {
+    position: absolute;
+    top: -6px;
+    left: 0;
+    width: 100%;
+    height: 18px;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.control-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--spacing-lg);
+}
+
+.control-btn {
+    background: none;
+    border: none;
+    color: var(--primary-blue);
+    cursor: pointer;
+    padding: var(--spacing-sm);
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-fast);
+    touch-action: manipulation;
+}
+
+.control-btn:hover {
+    background: var(--very-light-blue);
+    transform: scale(1.05);
+}
+
+.control-btn:active {
+    transform: scale(0.95);
+}
+
+.play-pause-btn {
+    background: var(--gradient-primary);
+    color: var(--white);
+    padding: var(--spacing-md);
+    box-shadow: var(--shadow-md);
+}
+
+.play-pause-btn:hover {
+    box-shadow: var(--shadow-lg);
+    transform: scale(1.1);
+}
+
+.play-pause-btn:active {
+    transform: scale(1);
+}
+
+.favorite-btn {
+    position: absolute;
+    top: -0.5rem;
+    left: 0;
+    background: none;
+    border: none;
+    color: var(--warning-gold);
+    cursor: pointer;
+    padding: var(--spacing-xs);
+    border-radius: var(--radius-full);
+    transition: all var(--transition-fast);
+    touch-action: manipulation;
+}
+
+.favorite-btn:hover {
+    background: rgba(245, 158, 11, 0.1);
+    transform: scale(1.1);
+}
+
+.favorite-btn:active {
+    transform: scale(0.95);
+}
+
+.favorite-btn.favorited {
+    color: var(--warning-gold);
+}
+
+/* Sections */
+.section {
+    margin-bottom: var(--spacing-2xl);
+    animation: slideInUp 0.5s ease-out;
+}
+
+.section-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: var(--spacing-lg);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.section-title svg {
+    color: var(--accent-blue);
+}
+
+/* Meditation Grid */
+.meditation-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+}
+
+@media (min-width: 640px) {
+    .meditation-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .meditation-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Meditation Card */
+.meditation-card {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    position: relative;
+    overflow: hidden;
+}
+
+.meditation-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--gradient-accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--transition-base);
+}
+
+.meditation-card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-4px);
+    border-color: var(--light-blue);
+}
+
+.meditation-card:hover::before {
+    transform: scaleX(1);
+}
+
+.meditation-card:active {
+    transform: translateY(-2px);
+}
+
+.meditation-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--spacing-md);
+}
+
+.meditation-card-icon {
+    width: 48px;
+    height: 48px;
+    background: var(--gradient-primary);
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--white);
+    flex-shrink: 0;
+}
+
+.meditation-card-favorite {
+    background: none;
+    border: none;
+    color: var(--text-light);
+    cursor: pointer;
+    padding: var(--spacing-xs);
+    border-radius: var(--radius-full);
+    transition: all var(--transition-fast);
+}
+
+.meditation-card-favorite:hover {
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--warning-gold);
+}
+
+.meditation-card-favorite.favorited {
+    color: var(--warning-gold);
+}
+
+.meditation-card-content {
+    flex: 1;
+}
+
+.meditation-card-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: var(--spacing-xs);
+    line-height: 1.3;
+}
+
+.meditation-card-category {
+    font-size: 0.85rem;
+    color: var(--text-medium);
+    margin-bottom: var(--spacing-sm);
+}
+
+.meditation-card-duration {
+    font-size: 0.8rem;
+    color: var(--text-light);
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.meditation-card-progress {
+    margin-top: var(--spacing-sm);
+    padding-top: var(--spacing-sm);
+    border-top: 1px solid var(--border-color);
+}
+
+.progress-label {
+    font-size: 0.75rem;
+    color: var(--text-medium);
+    margin-bottom: 0.25rem;
+}
+
+.progress-bar-small {
+    height: 3px;
+    background: var(--very-light-blue);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+}
+
+.progress-fill-small {
+    height: 100%;
+    background: var(--gradient-accent);
+    border-radius: var(--radius-full);
+    transition: width var(--transition-base);
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: var(--spacing-2xl) var(--spacing-lg);
+    max-width: 600px;
+    margin: var(--spacing-2xl) auto;
+}
+
+.empty-state svg {
+    color: var(--text-light);
+    margin-bottom: var(--spacing-lg);
+    animation: float 3s ease-in-out infinite;
+}
+
+.empty-state h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: var(--spacing-md);
+}
+
+.empty-state p {
+    font-size: 1rem;
+    color: var(--text-medium);
+    margin-bottom: var(--spacing-lg);
+}
+
+.file-naming-guide {
+    background: var(--gradient-overlay);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+    text-align: left;
+}
+
+.file-naming-guide p {
+    margin-bottom: var(--spacing-sm);
+}
+
+.file-naming-guide ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.file-naming-guide li {
+    padding: var(--spacing-xs) 0;
+    color: var(--text-medium);
+}
+
+.file-naming-guide code {
+    background: var(--white);
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.25rem;
+    font-family: 'Monaco', 'Courier New', monospace;
+    font-size: 0.85rem;
+    color: var(--primary-blue);
+}
+
+/* Loading Indicator */
+.loading-indicator {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 300;
+    display: none;
+}
+
+.loading-indicator.active {
+    display: block;
+}
+
+.spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid var(--very-light-blue);
+    border-top-color: var(--accent-blue);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto var(--spacing-md);
+}
+
+.loading-indicator p {
+    color: var(--text-medium);
+    font-weight: 500;
+}
+
+/* Utility Classes */
+.hidden {
+    display: none !important;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+/* Responsive Design */
+@media (min-width: 768px) {
+    .app-title {
+        font-size: 2.25rem;
+    }
+
+    .app-tagline {
+        font-size: 1.1rem;
+    }
+
+    .app-main {
+        padding: var(--spacing-xl);
+    }
+
+    .audio-player {
+        padding: var(--spacing-xl);
+    }
+}
+
+/* Dark Mode Support (Optional) */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-light: #0f172a;
+        --white: #1e293b;
+        --text-dark: #f1f5f9;
+        --text-medium: #cbd5e1;
+        --text-light: #94a3b8;
+        --border-color: #334155;
+    }
+
+    .meditation-card {
+        background: #1e293b;
+    }
+
+    .file-naming-guide code {
+        background: #0f172a;
+    }
+}
+
+/* Touch Improvements */
+@media (hover: none) {
+    .control-btn:hover {
+        background: none;
+        transform: none;
+    }
+
+    .meditation-card:hover {
+        transform: none;
+    }
+}
+
+/* Safe Area Support for iPhone */
+@supports (padding: max(0px)) {
+    body {
+        padding-left: max(0px, env(safe-area-inset-left));
+        padding-right: max(0px, env(safe-area-inset-right));
+    }
+
+    .app-header {
+        padding-top: max(var(--spacing-xl), env(safe-area-inset-top));
+    }
+}
